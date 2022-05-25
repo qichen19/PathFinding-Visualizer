@@ -1,6 +1,5 @@
 .node {
-  width: 25px;
-  height: 25px;
+  background-color: white;
   outline: 1px solid rgb(175, 216, 248);
   display: inline-block;
 }
@@ -39,6 +38,9 @@
 .wall {
   background-color: rgba(5, 13, 8, 0.93);
 }
+
+@media (min-width:960px) { .node {height: 25px; width: } }
+@media (min-width:0px) { .node {height: 20px;} }
 
 @keyframes visitedAnimation {
   0% {

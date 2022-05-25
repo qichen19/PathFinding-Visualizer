@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Node from "../../components/Node/Node";
+import ToolBar from "../../Toolbar/Toolbar";
 import _ from "lodash"
 import {dijkstra, getNodesInShortestPathOrder} from '../../algorithms/Dijkstra/Dijkstra';
 import {breadthFirstSearch, getNodesInShortestPathOrderBFS} from '../../algorithms/BFS/BFS';
@@ -9,23 +10,27 @@ import {greedyBFS, getNodesInShortestPathOrderGreedyBFS} from '../../algorithms/
 import getRecursiveDevisionWallsInOrder from '../../mazes/RecursiveDivision/RecursiveDivision';
 import RandomMaze from '../../mazes/RandomMaze/RandomMaze';
 
-export const START_NODE_ROW = 10;
+export const START_NODE_ROW = 4;
 export const START_NODE_COL = 10;
-export const FINISH_NODE_ROW = 15;
+export const FINISH_NODE_ROW = 16;
 export const FINISH_NODE_COL = 40;
-const NUM_OF_ROWS = 21;
-const NUM_OF_COLUMNS = 51;
+const NUM_OF_ROWS = 20;
+const NUM_OF_COLUMNS = 50;
 export const NUM_OF_WALLS = 300;
 
 class Visualizer extends Component {
   state = {
     grid: [],
     mouseIsPressed: false,
+    width: '25px',
+    height: '25px',
   };
 
   componentDidMount() {
     const grid = getInitialGrid();
-    this.setState({ grid: grid });
+    const width = getNodeWidth();
+    const height = getNodeHeight();
+    this.setState({ grid: grid, width: width, height: height});
   }
 
   clearBoardHandler = () => {
@@ -46,6 +51,7 @@ class Visualizer extends Component {
     this.setState({ grid: grid });
 
     const newGrid =_.clone(this.state.grid);
+
     for(let row = 0; row < NUM_OF_ROWS; row++) {
       for(let col = 0; col < NUM_OF_COLUMNS; col++) {
         const node = newGrid[row][col];
@@ -181,15 +187,17 @@ class Visualizer extends Component {
     const grid = this.state.grid;
     return (
       <div>
-      <button onClick={this.dijkstraHandler}>Dijkstra</button>
-      <button onClick={this.bfsHandler}>Breadth First Search</button>
-      <button onClick={this.dfsHandler}>Depth First Search</button>
-      <button onClick={this.aStarHandler}>A* Search</button>
-      <button onClick={this.greedyBFSHandler}>Greedy Best First Search</button>
-      <button onClick={this.clearBoardHandler}>clear Board</button>
-      <button onClick={this.clearPathHandler}>clear Path</button>
-      <button onClick={this.generateRandomMazeHandler}>Generate Random Maze</button>
-      <button onClick={this.generateRecursiveDivisionMazeHandler}>Generate Recursive Division Maze</button>
+      <ToolBar 
+        dijkstra={this.dijkstraHandler}
+        bfs={this.bfsHandler}
+        dfs={this.dfsHandler}
+        aStar={this.aStarHandler}
+        greedyBfs={this.greedyBFSHandler}
+        clearBoard={this.clearBoardHandler}
+        clearPath={this.clearPathHandler}
+        randomMaze={this.generateRandomMazeHandler}
+        recursiveMaze={this.generateRecursiveDivisionMazeHandler}  
+        ></ToolBar>
       <div className="Grid">
         {grid.map((row, rowIdx) => (
           <div key={rowIdx}>
@@ -200,6 +208,8 @@ class Visualizer extends Component {
                   key={nodeIdx}
                   row={row}
                   col={col}
+                  width={this.state.width}
+                  height={this.state.height}
                   isStart={isStart}
                   isFinish={isFinish}
                   isWall={isWall}
@@ -220,6 +230,7 @@ class Visualizer extends Component {
 
 const getInitialGrid = () => {
   const grid = [];
+  
   for (let row = 0; row < NUM_OF_ROWS; row++) {
     const currentRow = [];
     for (let col = 0; col < NUM_OF_COLUMNS; col++) {
@@ -230,6 +241,21 @@ const getInitialGrid = () => {
   }
   return grid;
 };
+
+const getNodeWidth = () => {
+    let maxWidth = window.innerWidth;
+    let width  = (maxWidth - 20)/NUM_OF_COLUMNS + 'px' ;
+    return width;
+}
+
+const getNodeHeight = () => {
+  let maxWidth = window.innerWidth;
+  let height = '25px';
+  if(maxWidth <= 640 ) {
+    height = '15px';
+  }
+  return height;
+}
 
 const createNode = (row, col) => {
   return {

@@ -17,6 +17,7 @@ const node = (props) => {
   }
   return (
     <div id={`node ${props.row} ${props.col}`}
+        style={{width: props.width}}
         className={`node ${extraClassName}`}
         onMouseDown = {() => props.onMouseDown(row, col)}
         onMouseEnter = {() => props.onMouseEnter(row, col)}
